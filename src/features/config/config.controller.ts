@@ -1,22 +1,19 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ConfigService } from './config.service';
-import { IConfigDto } from './config.dto';
+import { IConfigDto, ListConfigQueryDto } from './config.dto';
 
 @Controller('Config')
 export class ConfigController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+  }
 
   @Get()
-  findAll() {
-    return this.configService.getAllConfig();
+  findAll(
+    @Query() query: ListConfigQueryDto,
+  ) {
+    const { page, limit } = query;
+    console.log(page, limit);
+    return this.configService.getAllConfig(query.page, query.limit);
   }
 
   @Get(':id')

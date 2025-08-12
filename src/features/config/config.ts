@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ConfigType } from '../config-type/config-type';
 
 @Entity({ name: 'Config', schema: 'public' })
@@ -19,6 +19,8 @@ export class Config {
   @Column()
   configTypeId: string;
 
-  @OneToOne(() => ConfigType, (configType) => configType.id, { cascade: true })
+  @ManyToOne(() => ConfigType)
+  @JoinColumn({ name: 'configTypeId' })
   configType: ConfigType;
+
 }
