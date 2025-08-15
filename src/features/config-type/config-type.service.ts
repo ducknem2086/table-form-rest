@@ -2,20 +2,18 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { ConfigType } from './config-type';
-import { v4 as uuidv4 } from "uuid";
-
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ConfigTypeService {
   constructor(
     @InjectRepository(ConfigType)
     private readonly configTypeRepository: Repository<ConfigType>,
-  ) {
-  }
+  ) {}
 
   private readonly logger = new Logger(ConfigTypeService.name);
   async mock1mRecord(total = 1_000_000, chunkSize = 5_000): Promise<number> {
-    if (chunkSize <= 0) throw new Error("chunkSize must be > 0");
+    if (chunkSize <= 0) throw new Error('chunkSize must be > 0');
     if (total <= 0) return 0;
 
     // Ensure params per batch remain safe: columns * chunkSize < ~65k
@@ -34,7 +32,9 @@ export class ConfigTypeService {
       const currentSize = Math.min(chunkSize, total - offset);
 
       // Build plain values (no entity instances) for faster raw insert
-      const batch: Array<Pick<ConfigType, "id" | "name">> = new Array(currentSize);
+      const batch: Array<Pick<ConfigType, 'id' | 'name'>> = new Array(
+        currentSize,
+      );
       for (let i = 0; i < currentSize; i++) {
         const n = offset + i;
         batch[i] = {
@@ -51,7 +51,9 @@ export class ConfigTypeService {
       // Minimal progress logging; helps track long runs
       if (inserted % (chunkSize * 10) === 0 || inserted === total) {
         const elapsedMs = Date.now() - started;
-        this.logger.log(`Inserted ${inserted}/${total} rows in ${Math.round(elapsedMs / 1000)}s`);
+        this.logger.log(
+          `Inserted ${inserted}/${total} rows in ${Math.round(elapsedMs / 1000)}s`,
+        );
       }
     }
 
@@ -63,12 +65,11 @@ export class ConfigTypeService {
     return { affected: result.affected ?? 0 };
   }
 
-
   async mock1mRecordSql(total = 1_000_000): Promise<number> {
     if (total <= 0) return 0;
 
     // Pick the UUID function you have installed; prefer gen_random_uuid()
-    const uuidFn = "gen_random_uuid()"; // or 'uuid_generate_v4()'
+    const uuidFn = 'gen_random_uuid()'; // or 'uuid_generate_v4()'
 
     // NOTE: This uses a single SQL statement; Postgres handles the generation server-side.
     // It avoids parameter limits entirely and is very fast.
@@ -124,9 +125,9 @@ export class ConfigTypeService {
     const [data, total] = await this.configTypeRepository
       .createQueryBuilder('configType')
       .orderBy('configType.id', 'ASC') // optional, but recommended for pagination
-      .limit(limit)              // LIMIT in PostgreSQL
-      .offset(offset)            // OFFSET in PostgreSQL
-      .getManyAndCount();        // fetch data + total count
+      .limit(limit) // LIMIT in PostgreSQL
+      .offset(offset) // OFFSET in PostgreSQL
+      .getManyAndCount(); // fetch data + total count
 
     return {
       data,
@@ -137,12 +138,11 @@ export class ConfigTypeService {
     };
   }
 
-
   async findOne(id: string) {
     const findOne = await this.configTypeRepository.findOneBy({ id: id });
     if (!findOne) {
       {
-        throw new NotFoundException(`khong tim thay configType ${ id }`);
+        throw new NotFoundException(`khong tim thay configType ${id}`);
       }
     }
     return findOne;

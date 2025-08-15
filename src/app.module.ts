@@ -14,10 +14,15 @@ import { ConfigTypeModule } from './features/config-type/config-type.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 4444,
+      // port: 4444,
+      // username: 'admin',
+      // password: 'admin',
+      // database: 'config',
+
+      port:5432,
       username: 'admin',
       password: 'admin',
-      database: 'config',
+      database: 'setup',
       entities: ['**/entity/*.entity{.ts,.js}'],
       synchronize: false,
       logging: true,
